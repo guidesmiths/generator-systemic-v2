@@ -4,7 +4,7 @@
 module.exports = [
   {
     type: "input",
-    name: "npm_package_name",
-    message: "What's the name of your package?"
+    name: "npm_package_version",
+    message: "NodeJS version to config: Ex: 14"
   },
 ];

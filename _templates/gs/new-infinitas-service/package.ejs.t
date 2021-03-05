@@ -1,0 +1,53 @@
+---
+to: app/package.json
+sh: cd app && npm install
+---
+{
+  "name": "<%= h.inflection.dasherize(npm_package_name) %>",
+  "version": "0.0.1",
+  "description": "<%= npm_package_description %>",
+  "main": "index.js",
+  "scripts": {},
+  "devDependencies": {
+    "@commitlint/cli": "^11.0.0",
+    "@commitlint/config-conventional": "^11.0.0",
+    "chai": "^4.2.0",
+    "eslint": "^7.19.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jest": "^24.1.3",
+    "husky": "^4.3.8",
+    "jest": "^26.6.3",
+    "jest-config": "^26.6.3",
+    "jest-junit": "^12.0.0",
+    "make-manifest": "^1.0.4",
+    "supertest": "^6.1.3"
+  },
+  "dependencies": {
+    "on-headers": "^1.0.2",
+    "body-parser": "^1.19.0",
+    "boom": "^7.3.0",
+    "bunyan": "^1.8.15",
+    "chalk": "^4.1.0",
+    "confabulous": "^1.7.0",
+    "cross-env": "^7.0.3",
+    "debug": "^4.3.1",
+    "express-jsdoc-swagger": "^1.3.1",
+    "hogan.js": "^3.0.2",
+    "optimist": "^0.6.1",
+    "optional": "^0.1.4",
+    "prepper": "^1.2.0",
+    "ramda": "^0.27.1",
+    "systemic": "^3.3.9",
+    "systemic-express": "^1.1.1",
+    "systemic-domain-runner": "^1.1.0",
+    "systemic-azure-metrics": "^0.2.0"
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-commit": "npm run lint",
+      "pre-push": "npm run test"
+    }
+  }
+}

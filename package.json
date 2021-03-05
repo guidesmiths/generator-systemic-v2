@@ -1,0 +1,24 @@
+{
+  "name": "generator-systemic-v2",
+  "version": "1.0.0",
+  "description": "Generator a basic systemic project",
+  "main": "setup.ts",
+  "scripts": {
+    "test": "npm run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bounteous/generator-systemic-v2.git"
+  },
+  "keywords": [
+    "systemic",
+    "generator",
+    "v2"
+  ],
+  "author": "",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/bounteous/generator-systemic-v2/issues"
+  },
+  "homepage": "https://github.com/bounteous/generator-systemic-v2#readme"
+}

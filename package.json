@@ -9,7 +9,7 @@
     "test:watch:debug": "DEBUG=Martian:* npm run test:watch",
     "test:coverage": "npm run test -- --coverage",
     "build": "npx tsc",
-    "start": "npm run build && node ./build/app.js",
+    "start": "npm run build && node ./build/setup.js",
     "start:debug": "npm run build && DEBUG=Martian:* node ./build/app.js"
   },
   "repository": {
@@ -31,12 +31,16 @@
     "node": "14.x"
   },
   "devDependencies": {
+    "@types/jest": "^26.0.20",
+    "@types/lodash": "^4.14.168",
+    "@types/node": "^14.14.31",
     "debug": "^4.3.1",
     "jest": "^26.6.3",
     "ts-jest": "^26.5.3",
     "typescript": "^4.2.3"
   },
   "dependencies": {
+    "hygen": "^6.0.4",
     "lodash": "^4.17.21"
   }
 }

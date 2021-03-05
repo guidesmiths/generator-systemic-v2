@@ -4,7 +4,13 @@
   "description": "Generator a basic systemic project",
   "main": "setup.ts",
   "scripts": {
-    "test": "npm run test"
+    "test": "npx jest --runInBand --verbose",
+    "test:watch": "npm run test -- --watchAll",
+    "test:watch:debug": "DEBUG=Martian:* npm run test:watch",
+    "test:coverage": "npm run test -- --coverage",
+    "build": "npx tsc",
+    "start": "npm run build && node ./build/app.js",
+    "start:debug": "npm run build && DEBUG=Martian:* node ./build/app.js"
   },
   "repository": {
     "type": "git",
@@ -20,5 +26,17 @@
   "bugs": {
     "url": "https://github.com/bounteous/generator-systemic-v2/issues"
   },
-  "homepage": "https://github.com/bounteous/generator-systemic-v2#readme"
+  "homepage": "https://github.com/bounteous/generator-systemic-v2#readme",
+  "engines": {
+    "node": "14.x"
+  },
+  "devDependencies": {
+    "debug": "^4.3.1",
+    "jest": "^26.6.3",
+    "ts-jest": "^26.5.3",
+    "typescript": "^4.2.3"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21"
+  }
 }

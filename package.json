@@ -4,7 +4,7 @@
   "description": "Generator a basic systemic project",
   "main": "setup.ts",
   "bin": {
-    "generator-systemic-v2": "setup.ts"
+    "generator-systemic-v2": "build/setup.js"
   },
   "scripts": {
     "test": "npx jest --runInBand --verbose",
@@ -12,7 +12,7 @@
     "test:watch:debug": "DEBUG=Martian:* npm run test:watch",
     "test:coverage": "npm run test -- --coverage",
     "build": "npx tsc",
-    "start": "npm run build && node ./build/setup.js",
+    "postinstall": "npm run build",
     "start:debug": "npm run build && DEBUG=Martian:* node ./build/app.js"
   },
   "repository": {

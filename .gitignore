@@ -103,5 +103,8 @@ dist
 # TernJS port file
 .tern-port
 
+# Hygen tmp templates
+_templates
+
 # Generator output
 app

@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Generator a basic systemic project",
   "main": "setup.ts",
+  "bin": {
+    "generator-systemic-v2": "setup.ts"
+  },
   "scripts": {
     "test": "npx jest --runInBand --verbose",
     "test:watch": "npm run test -- --watchAll",

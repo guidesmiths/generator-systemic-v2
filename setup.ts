@@ -3,7 +3,8 @@ import yargs from 'yargs';
 import del from 'del';
 import Git from 'nodegit';
 import { get } from 'lodash';
-import { readFileSync, existsSync } from 'fs';
+import { exec } from 'child_process';
+import { readFileSync, existsSync, renameSync, mkdirSync, moveSync } from 'fs-extra';
 
 async function start() {
   const templateCommand = yargs
@@ -18,6 +19,11 @@ async function start() {
         description: 'the template generator',
         require: true,
         string: true
+      },
+      'output': {
+        description: 'the template generator output files',
+        require: true,
+        string: true
       }
     })
     .help()
@@ -26,7 +32,8 @@ async function start() {
 
   const templateArgvs = {
     url: get(templateCommand, 'url'),
-    generator: get(templateCommand, 'generator')
+    generator: get(templateCommand, 'generator'),
+    output: get(templateCommand, 'output'),
   };
 
   const gitCommand = yargs
@@ -66,7 +73,8 @@ async function start() {
     privateKey: readFileSync(get(gitCommand, 'private-key')).toString()
   };
 
-  const templatesPath = '_templates_';
+  const templatesGeneratorsPath = 'new-generators';
+  const templatesPath = `_templates_/${templatesGeneratorsPath}`;
   if (existsSync(templatesPath)) {
     del.sync(templatesPath, { force: true });
   }
@@ -82,9 +90,23 @@ async function start() {
     }
   });
 
+  const tmpOutput = 'app'
+  del.sync(tmpOutput, { force: true });
+  const generators = templateArgvs.generator.split(',');
+  for (const generator of generators) {
+    exec(`npx hygen ${templatesGeneratorsPath} ${generator}`);
+  }
 
+  if(!existsSync(tmpOutput)) {
+    console.error('This generator did no generated any output files');
+    process.exit(1);
+  }
 
-  console.log(templateArgvs)
+  if (existsSync(templateArgvs.output)) {
+    del.sync(templateArgvs.output, { force: true })
+  }
+  mkdirSync(templateArgvs.output)
+  moveSync(tmpOutput, templateArgvs.output);
 }
 
 start();

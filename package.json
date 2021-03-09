@@ -31,6 +31,7 @@
     "node": "14.x"
   },
   "devDependencies": {
+    "@types/fs-extra": "^9.0.8",
     "@types/jest": "^26.0.20",
     "@types/lodash": "^4.14.168",
     "@types/node": "^14.14.31",
@@ -42,6 +43,7 @@
   "dependencies": {
     "@types/nodegit": "^0.26.15",
     "del": "^6.0.0",
+    "fs-extra": "^9.1.0",
     "hygen": "^6.0.4",
     "lodash": "^4.17.21",
     "nodegit": "^0.27.0",

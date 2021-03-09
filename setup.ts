@@ -1,4 +1,4 @@
-// Modules
+#!/usr/bin/env node
 import yargs from 'yargs';
 import del from 'del';
 import Git from 'nodegit';

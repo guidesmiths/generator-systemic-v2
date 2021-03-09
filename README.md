@@ -1,8 +1,14 @@
 # generator-systemic-v2
 
-## List generators
+## Development or install
 ```
-npx hygen gs
+npm pack
+```
+```
+npm i -g generator-systemic-v2-1.0.0.tgz
+```
+```
+generator-systemic-v2 --help
 ```
 
 #### Examples

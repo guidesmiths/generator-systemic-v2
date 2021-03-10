@@ -25,8 +25,8 @@ So what we need is to generate a new project with the hygen templates section al
 
 ```bash
 mkdir new-templates
-git init -b main
 cd new-templates
+git init -b main
 mkdir generator _shared
 # Visit the hygen docs for generating some basic hygen generator
 # http://www.hygen.io/docs/quick-start

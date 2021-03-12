@@ -1,18 +1,18 @@
-# generator-systemic-v2
+# gs-hygen
 
 ## Install from repository
 ```bash
-git clone https://github.com/bounteous/generator-systemic-v2
+git clone https://github.com/bounteous/gs-hygen
 npm install --quiet
 npm pack
-npm i -g generator-systemic-v2-1.0.0.tgz
-generator-systemic-v2 --help
+npm i -g gs-hygen-1.0.0.tgz
+gs-hygen --help
 ```
 
 ## Usage examples
 
 ```bash
-generator-systemic-v2 \
+gs-hygen \
 template --url git@github.com:bounteous/infinitas-hygen-template-generators.git --generator nvm,docker-node-lts --output /tmp/generator-demo-repo \
 git --private-key ~/.ssh/id_rsa --public-key ~/.ssh/id_rsa.pub
 ```

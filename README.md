@@ -14,7 +14,7 @@ gs-hygen --help
 
 ```bash
 gs-hygen \
-template --url git@github.com:bounteous/infinitas-hygen-template-generators.git --generator nvm,docker-node-lts --output /tmp/generator-demo-repo \
+template --url git@github.com:guidesmiths/infinitas-hygen-template-generators.git --generator nvm,docker-node-lts --output /tmp/generator-demo-repo \
 git --private-key ~/.ssh/id_rsa --public-key ~/.ssh/id_rsa.pub
 ```
 

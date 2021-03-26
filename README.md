@@ -1,6 +1,7 @@
 # gs-hygen
 
 ## Install from repository
+
 ```bash
 git clone https://github.com/bounteous/gs-hygen
 npm install --quiet
@@ -36,4 +37,4 @@ git remote add origin <REMOTE_URL>
 git push origin main
 ```
 
-This templates project <a href="https://github.com/bounteous/infinitas-hygen-template-generators">repo</a> is a good starting point
+This templates project <a href="https://github.com/guidesmiths/infinitas-hygen-template-generators">repo</a> is a good starting point

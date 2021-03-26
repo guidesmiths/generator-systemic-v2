@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import yargs from 'yargs';
 import del from 'del';
+import colors from 'colors';
 import Git from 'nodegit';
 import { get } from 'lodash';
 import { spawnSync } from 'child_process';
@@ -92,9 +93,11 @@ async function start() {
   const tmpOutput = 'app'
   del.sync(tmpOutput, { force: true });
   const generators = templateArgvs.generator.split(',');
+
+  console.log(colors.bgBlue(`Found ${generators.length} hygen generators`));
   for (const generator of generators) {
     const command = ['hygen', 'generator', generator];
-    console.info(command);
+    console.log(colors.blue(`\nRunning ${generator} ...`));
     spawnSync('npx', command, { stdio: 'inherit' })
   }
 

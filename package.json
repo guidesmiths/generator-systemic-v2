@@ -9,11 +9,11 @@
   "scripts": {
     "test": "npx jest --runInBand --verbose",
     "test:watch": "npm run test -- --watchAll",
-    "test:watch:debug": "DEBUG=Martian:* npm run test:watch",
+    "test:watch:debug": "npm run test:watch",
     "test:coverage": "npm run test -- --coverage",
     "build": "npx tsc",
     "prepare": "npm run build",
-    "start:debug": "npm run build && DEBUG=Martian:* node ./build/app.js"
+    "start": "npm run build && node ./build/setup.js"
   },
   "repository": {
     "type": "git",
@@ -45,6 +45,7 @@
   },
   "dependencies": {
     "@types/nodegit": "^0.26.15",
+    "colors": "^1.4.0",
     "del": "^6.0.0",
     "fs-extra": "^9.1.0",
     "hygen": "^6.0.4",

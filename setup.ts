@@ -1,100 +1,38 @@
 #!/usr/bin/env node
-import yargs from 'yargs';
+
+// LIBs
+import { parseCliArguments } from './src/utils/arguments';
+import { clone as gitClone } from './src/utils/git';
+// Types
+import { ArgumentsList } from './src/types/argument';
+// Modules
 import del from 'del';
 import colors from 'colors';
-import Git from 'nodegit';
-import { get } from 'lodash';
 import { spawnSync } from 'child_process';
-import { readFileSync, existsSync, moveSync } from 'fs-extra';
+import { existsSync, moveSync } from 'fs-extra';
 
-async function start() {
-  const templateCommand = yargs
-    .command('template', 'Template command')
-    .options({
-      'url': {
-        description: 'the template git repository url',
-        require: true,
-        string: true
-      },
-      'generator': {
-        description: 'the template generator',
-        require: true,
-        string: true
-      },
-      'output': {
-        description: 'the template generator output files',
-        require: true,
-        string: true
-      }
-    })
-    .help()
-    .alias('help', 'h')
-    .argv;
-
-  const templateArgvs = {
-    url: get(templateCommand, 'url'),
-    generator: get(templateCommand, 'generator'),
-    output: get(templateCommand, 'output'),
-  };
-
-  const gitCommand = yargs
-    .command('git', 'Git command')
-    .options({
-      'username': {
-        description: 'git username',
-        require: false,
-        string: true,
-        default: 'git'
-      },
-      'credentials': {
-        description: 'git username credentials',
-        require: false,
-        string: true,
-        default: ''
-      },
-      'public-key': {
-        description: 'git user public key',
-        require: true,
-        string: true
-      },
-      'private-key': {
-        description: 'git user provate key',
-        require: true,
-        string: true
-      }
-    })
-    .help()
-    .alias('help', 'h')
-    .argv;
-
-  const gitArgvs = {
-    username: get(gitCommand, 'username'),
-    credentials: get(gitCommand, 'credentials'),
-    publicKey: readFileSync(get(gitCommand, 'public-key')).toString(),
-    privateKey: readFileSync(get(gitCommand, 'private-key')).toString()
-  };
+async function main() {
+  const argumentsList: ArgumentsList = parseCliArguments();
 
   const templatesPath = `_templates/`;
   if (existsSync(templatesPath)) {
     del.sync(templatesPath, { force: true });
   }
 
-  await Git.Clone.clone(templateArgvs.url, templatesPath, {
-    fetchOpts: {
-      callbacks: {
-        credentials: async () => Git.Cred.sshKeyMemoryNew(
-          gitArgvs.username, gitArgvs.publicKey,
-          gitArgvs.privateKey, gitArgvs.credentials
-        )
-      }
-    }
+  await gitClone({
+    url: argumentsList.url,
+    destination: templatesPath,
+    username: argumentsList.username,
+    publicKey: argumentsList.publicKey,
+    privateKey: argumentsList.privateKey,
+    credentials: argumentsList.credentials,
   });
 
   const tmpOutput = 'app'
   del.sync(tmpOutput, { force: true });
-  const generators = templateArgvs.generator.split(',');
+  const generators = argumentsList.generator.split(',');
 
-  console.log(colors.bgBlue(`Found ${generators.length} hygen generators`));
+  console.log(colors.underline(`Found ${generators.length} hygen generators`));
   for (const generator of generators) {
     const command = ['hygen', 'generator', generator];
     console.log(colors.blue(`\nRunning ${generator} ...`));
@@ -106,10 +44,10 @@ async function start() {
     process.exit(1);
   }
 
-  if (existsSync(templateArgvs.output)) {
-    del.sync(templateArgvs.output, { force: true })
+  if (existsSync(argumentsList.output)) {
+    del.sync(argumentsList.output, { force: true })
   }
-  moveSync(tmpOutput, templateArgvs.output);
+  moveSync(tmpOutput, argumentsList.output);
 }
 
-start();
+main();

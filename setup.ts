@@ -3,6 +3,7 @@
 // LIBs
 import { parseCliArguments } from './src/utils/arguments';
 import { clone as gitClone } from './src/utils/git';
+import { version as checkVersion } from './src/utils/cheks';
 // Types
 import { ArgumentsList } from './src/types/argument';
 // Modules
@@ -13,6 +14,7 @@ import { existsSync, moveSync } from 'fs-extra';
 
 async function main() {
   const argumentsList: ArgumentsList = parseCliArguments();
+  checkVersion();
 
   const templatesPath = `_templates/`;
   if (existsSync(templatesPath)) {

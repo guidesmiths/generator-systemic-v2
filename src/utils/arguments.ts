@@ -37,7 +37,7 @@ export function parseCliArguments(): ArgumentsList {
         description: 'the template generator output files',
         require: true,
         string: true
-      }
+      },
     })
     .command('git', 'Git command')
     .options({

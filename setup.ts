@@ -3,7 +3,7 @@
 // LIBs
 import { parseCliArguments } from './src/utils/arguments';
 import { clone as gitClone } from './src/utils/git';
-import { version as checkVersion } from './src/utils/cheks';
+import { version as checkVersion, testOutputFiles } from './src/utils/cheks';
 // Types
 import { ArgumentsList } from './src/types/argument';
 // Modules
@@ -19,6 +19,10 @@ async function main() {
   const templatesPath = `_templates/`;
   if (existsSync(templatesPath)) {
     del.sync(templatesPath, { force: true });
+  }
+
+  if (existsSync(argumentsList.output)) {
+    del.sync(argumentsList.output, { force: true })
   }
 
   await gitClone({
@@ -46,10 +50,8 @@ async function main() {
     process.exit(1);
   }
 
-  if (existsSync(argumentsList.output)) {
-    del.sync(argumentsList.output, { force: true })
-  }
   moveSync(tmpOutput, argumentsList.output);
+  testOutputFiles(generators, argumentsList.output);
 }
 
 main();

@@ -3,7 +3,7 @@
 // LIBs
 import { parseCliArguments } from './src/utils/arguments';
 import { clone as gitClone } from './src/utils/git';
-import { version as checkVersion } from './src/utils/cheks';
+import { version as checkVersion, testOutputFiles } from './src/utils/cheks';
 // Types
 import { ArgumentsList } from './src/types/argument';
 // Modules
@@ -21,6 +21,10 @@ async function main() {
     del.sync(templatesPath, { force: true });
   }
 
+  if (existsSync(argumentsList.output)) {
+    del.sync(argumentsList.output, { force: true })
+  }
+
   await gitClone({
     url: argumentsList.url,
     destination: templatesPath,
@@ -34,7 +38,7 @@ async function main() {
   del.sync(tmpOutput, { force: true });
   const generators = argumentsList.generator.split(',');
 
-  console.log(colors.underline(`Found ${generators.length} hygen generators`));
+  console.log(colors.bold(`Found ${generators.length} hygen generators, taking off the plane 🛨 ...`));
   for (const generator of generators) {
     const command = ['hygen', 'generator', generator];
     console.log(colors.blue(`\nRunning ${generator} ...`));
@@ -46,10 +50,8 @@ async function main() {
     process.exit(1);
   }
 
-  if (existsSync(argumentsList.output)) {
-    del.sync(argumentsList.output, { force: true })
-  }
   moveSync(tmpOutput, argumentsList.output);
+  testOutputFiles(generators, argumentsList.output);
 }
 
 main();

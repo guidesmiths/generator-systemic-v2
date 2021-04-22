@@ -38,7 +38,7 @@ async function main() {
   del.sync(tmpOutput, { force: true });
   const generators = argumentsList.generator.split(',');
 
-  console.log(colors.underline(`Found ${generators.length} hygen generators`));
+  console.log(colors.bold(`Found ${generators.length} hygen generators, taking off the plane 🛨 ...`));
   for (const generator of generators) {
     const command = ['hygen', 'generator', generator];
     console.log(colors.blue(`\nRunning ${generator} ...`));

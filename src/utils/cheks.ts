@@ -2,7 +2,7 @@
 import colors from 'colors';
 import { readFileSync, existsSync } from 'fs-extra';
 import { parseDocument } from 'yaml';
-import { get, isEmpty } from 'lodash';
+import { get, isEmpty, isNil } from 'lodash';
 
 export function version(): void {
   const version: string = process.version.split('.')[0];
@@ -29,12 +29,21 @@ function checkFileExists(folder: string, files: string[]): string[] {
     });
 }
 
-export function testOutputFiles(generatorsList: string[], outputFolder: string) {
+export function testOutputFiles(generatorsList: string[], outputFolder: string): void {
   console.log(colors.bold(`\nRunning generators output files testing`), '...\n');
-  const outputTestError = generatorsList
-    .map(generatorName => `./_templates/generator/${generatorName}/output.yaml`)
-    .filter(generatorOutputTestPath => existsSync(generatorOutputTestPath))
-    .map(generatorOutputTestPath => {
+  const outputTestError: string[][] = generatorsList
+    .map(generatorName => ({
+      name: generatorName,
+      path: `./_templates/generator/${generatorName}/output.yaml`,
+    }))
+    .filter(({ name, path }) => {
+      const exists = existsSync(path);
+      if (!exists) {
+        console.log(colors.yellow(`⚠ Generator ${name} is missing testing file "output.yaml" ⚠`));
+      }
+      return exists;
+    })
+    .map(({ path: generatorOutputTestPath }) => {
       const yamlFile = readFileSync(generatorOutputTestPath, 'utf-8');
       const parsedYaml = parseDocument(yamlFile);
       const expected = get(parsedYaml, 'contents.items');
@@ -43,7 +52,7 @@ export function testOutputFiles(generatorsList: string[], outputFolder: string) 
       return checkFileExists(`${outputFolder}/${folder}`, files);
     });
 
-  if (!isEmpty(outputTestError)) {
+  if (!isEmpty(outputTestError) && !isNil(outputTestError[0][0])) {
     process.exit(1);
   }
 }

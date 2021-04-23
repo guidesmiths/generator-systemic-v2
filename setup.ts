@@ -9,10 +9,14 @@ import { ArgumentsList } from './src/types/argument';
 // Modules
 import del from 'del';
 import colors from 'colors';
-import { spawnSync } from 'child_process';
+import path from 'path';
+import execa from 'execa';
+import { Spinner } from 'cli-spinner';
 import { existsSync, moveSync } from 'fs-extra';
+import { runner as hygen, Logger } from 'hygen';
 
 async function main() {
+  process.chdir(__dirname);
   const argumentsList: ArgumentsList = parseCliArguments();
   checkVersion();
 
@@ -34,15 +38,27 @@ async function main() {
     credentials: argumentsList.credentials,
   });
 
-  const tmpOutput = 'app'
+  const tmpOutput = `${__dirname}/app`;
   del.sync(tmpOutput, { force: true });
   const generators = argumentsList.generator.split(',');
 
-  console.log(colors.bold(`Found ${generators.length} hygen generators, taking off the plane 🛨 ...`));
+  console.log(colors.bold(`Found ${generators.length} hygen generators, taking off the plane ✈ ...`));
   for (const generator of generators) {
-    const command = ['hygen', 'generator', generator];
-    console.log(colors.blue(`\nRunning ${generator} ...`));
-    spawnSync('npx', command, { stdio: 'inherit' })
+    await hygen(['generator', generator], {
+      templates: path.join(__dirname, templatesPath),
+      cwd: tmpOutput,
+      logger: new Logger(() => { }),
+      createPrompter: () => require('enquirer'),
+      exec: async (action, body) => {
+        const opts = body && body.length > 0 ? { input: body } : {};
+        const spinner = new Spinner(action);
+        spinner.setSpinnerString('⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏');
+        spinner.start();
+        await execa.command(action, { ...opts, shell: true, cwd: tmpOutput });
+        spinner.stop(!!'clear');
+      },
+      debug: !!process.env.DEBUG
+    });
   }
 
   if (!existsSync(tmpOutput)) {
@@ -50,7 +66,12 @@ async function main() {
     process.exit(1);
   }
 
+  const mvSpinner = new Spinner(`Moving generated files to "${argumentsList.output}"`);
+  mvSpinner.setSpinnerString('◴◷◶◵');
+  mvSpinner.start();
   moveSync(tmpOutput, argumentsList.output);
+  mvSpinner.stop(!!'clear');
+
   testOutputFiles(generators, argumentsList.output);
 }
 

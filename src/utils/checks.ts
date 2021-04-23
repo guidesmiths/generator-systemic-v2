@@ -4,18 +4,6 @@ import { readFileSync, existsSync } from 'fs-extra';
 import { parseDocument } from 'yaml';
 import { get, isEmpty, isNil } from 'lodash';
 
-export function version(): void {
-  const version: string = process.version.split('.')[0];
-  const recommendedVersion: string = `v${process.env.npm_package_engines_node.split('.')[0]}`;
-
-  if (version !== recommendedVersion) {
-    console.log(colors.yellow(
-      `Your NodeJS version ${version} is not recommended to use on this project.
-      Recommended version: ${recommendedVersion}`,
-    ));
-  }
-}
-
 function checkFileExists(folder: string, files: string[]): string[] {
   return files
     .map(file => `${folder}${file}`)

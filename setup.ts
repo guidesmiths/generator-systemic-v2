@@ -3,7 +3,7 @@
 // LIBs
 import { parseCliArguments } from './src/utils/arguments';
 import { clone as gitClone } from './src/utils/git';
-import { version as checkVersion, testOutputFiles } from './src/utils/cheks';
+import { testOutputFiles } from './src/utils/checks';
 // Types
 import { ArgumentsList } from './src/types/argument';
 // Modules
@@ -18,7 +18,6 @@ import { runner as hygen, Logger } from 'hygen';
 async function main() {
   process.chdir(__dirname);
   const argumentsList: ArgumentsList = parseCliArguments();
-  checkVersion();
 
   const templatesPath = `_templates/`;
   if (existsSync(templatesPath)) {

@@ -4,7 +4,7 @@
 import { parseCliArguments } from './src/utils/arguments';
 import { clone as gitClone } from './src/utils/git';
 import { testOutputFiles } from './src/utils/checks';
-import { moveSyncVerbose } from './src/utils/storage';
+import { confirmBeforeRemove } from './src/utils/storage';
 // Types
 import { ArgumentsList } from './src/types/argument';
 import { SpinnerList } from './src/types/cli';
@@ -16,20 +16,15 @@ import execa from 'execa';
 import { Spinner } from 'cli-spinner';
 import { existsSync } from 'fs-extra';
 import { runner as hygen, Logger } from 'hygen';
+// Triggers
+process.chdir(__dirname);
 
-async function main() {
-  process.chdir(__dirname);
-  const argumentsList: ArgumentsList = parseCliArguments();
-
+export async function main(argumentsList: ArgumentsList) {
   const templatesPath = `_templates/`;
   if (existsSync(templatesPath)) {
     del.sync(templatesPath, { force: true });
   }
-
-  if (existsSync(argumentsList.output)) {
-    del.sync(argumentsList.output, { force: true })
-  }
-
+  await confirmBeforeRemove(argumentsList.output)
   await gitClone({
     url: argumentsList.url,
     destination: templatesPath,
@@ -39,15 +34,13 @@ async function main() {
     credentials: argumentsList.credentials,
   });
 
-  const tmpOutput = `${__dirname}/app`;
-  del.sync(tmpOutput, { force: true });
   const generators = argumentsList.generator.split(',');
 
   console.log(colors.bold(`Found ${generators.length} hygen generators, taking off the plane ✈ ...`));
   for (const generator of generators) {
     await hygen(['generator', generator], {
       templates: path.join(__dirname, templatesPath),
-      cwd: tmpOutput,
+      cwd: argumentsList.output,
       logger: new Logger(() => { }),
       createPrompter: () => require('enquirer'),
       exec: async (action, body) => {
@@ -55,20 +48,22 @@ async function main() {
         const spinner = new Spinner(action)
           .setSpinnerString(SpinnerList.HARD)
           .start();
-        await execa.command(action, { ...opts, shell: true, cwd: tmpOutput });
+        await execa.command(action, { ...opts, shell: true, cwd: argumentsList.output });
         spinner.stop(!!'clear');
       },
       debug: !!process.env.DEBUG
     });
   }
 
-  if (!existsSync(tmpOutput)) {
+  if (!existsSync(argumentsList.output)) {
     console.error('This generator did no generated any output files');
     process.exit(1);
   }
 
-  moveSyncVerbose(tmpOutput, argumentsList.output);
   testOutputFiles(generators, argumentsList.output);
 }
 
-main();
+if (!process.env.AVOID_AUTOSTART) {
+  const argumentsList: ArgumentsList = parseCliArguments();
+  main(argumentsList);
+}

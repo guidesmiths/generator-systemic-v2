@@ -4,15 +4,17 @@
 import { parseCliArguments } from './src/utils/arguments';
 import { clone as gitClone } from './src/utils/git';
 import { testOutputFiles } from './src/utils/checks';
+import { moveSyncVerbose } from './src/utils/storage';
 // Types
 import { ArgumentsList } from './src/types/argument';
+import { SpinnerList } from './src/types/cli';
 // Modules
 import del from 'del';
 import colors from 'colors';
 import path from 'path';
 import execa from 'execa';
 import { Spinner } from 'cli-spinner';
-import { existsSync, moveSync } from 'fs-extra';
+import { existsSync } from 'fs-extra';
 import { runner as hygen, Logger } from 'hygen';
 
 async function main() {
@@ -50,9 +52,9 @@ async function main() {
       createPrompter: () => require('enquirer'),
       exec: async (action, body) => {
         const opts = body && body.length > 0 ? { input: body } : {};
-        const spinner = new Spinner(action);
-        spinner.setSpinnerString('⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏');
-        spinner.start();
+        const spinner = new Spinner(action)
+          .setSpinnerString(SpinnerList.HARD)
+          .start();
         await execa.command(action, { ...opts, shell: true, cwd: tmpOutput });
         spinner.stop(!!'clear');
       },
@@ -65,12 +67,7 @@ async function main() {
     process.exit(1);
   }
 
-  const mvSpinner = new Spinner(`Moving generated files to "${argumentsList.output}"`);
-  mvSpinner.setSpinnerString('◴◷◶◵');
-  mvSpinner.start();
-  moveSync(tmpOutput, argumentsList.output);
-  mvSpinner.stop(!!'clear');
-
+  moveSyncVerbose(tmpOutput, argumentsList.output);
   testOutputFiles(generators, argumentsList.output);
 }
 

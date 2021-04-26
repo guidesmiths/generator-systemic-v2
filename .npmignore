@@ -1,0 +1,13 @@
+*.log
+.codeclimate.yml
+.idea
+.eslintignore
+.eslintrc
+.github
+.nyc_output
+_config.yml
+coverage
+cc-test-reporter
+docs
+node_modules
+test

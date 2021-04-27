@@ -1,7 +1,7 @@
 {
   "name": "gs-hygen",
   "version": "1.0.1",
-  "description": "Generator a basic systemic project",
+  "description": "Remote hygen templates generator",
   "main": "setup.ts",
   "bin": {
     "gs-hygen": "build/setup.js"
@@ -34,8 +34,6 @@
     "node": "14.x"
   },
   "devDependencies": {
-    "@commitlint/cli": "^12.1.1",
-    "@commitlint/config-conventional": "^12.1.1",
     "@types/cli-spinner": "^0.2.0",
     "@types/fs-extra": "^9.0.8",
     "@types/jest": "^26.0.22",

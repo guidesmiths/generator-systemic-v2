@@ -1,4 +1,4 @@
 export interface OutputFiles {
-    dir: string,
-    files: string[]
-};
+    dir: string;
+    files: string[];
+}

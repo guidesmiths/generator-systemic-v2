@@ -25,8 +25,9 @@ export function parseCliArguments(): ArgumentsList {
         .options({
             url: {
                 description: 'the template git repository url',
-                require: true,
+                require: false,
                 string: true,
+                default: '',
             },
             generator: {
                 description: 'the template generator',
@@ -55,13 +56,15 @@ export function parseCliArguments(): ArgumentsList {
             },
             'public-key': {
                 description: 'git user public key',
-                require: true,
+                require: false,
                 string: true,
+                default: '',
             },
             'private-key': {
                 description: 'git user provate key',
-                require: true,
+                require: false,
                 string: true,
+                default: '',
             },
         })
         .help()

@@ -1,11 +1,10 @@
 // Modules
 import yargs from 'yargs';
 import { get } from 'lodash';
-import { readFileSync } from 'fs-extra';
+import { PathLike, readFileSync } from 'fs-extra';
 // Types
 import { Arguments as YargsArguments } from 'yargs';
 import { ArgumentsList } from '../types/argument';
-import { PathLike } from 'node:fs';
 
 function parseCliArgumentsToList(yargsArguments: YargsArguments): ArgumentsList {
     return {
@@ -25,8 +24,9 @@ export function parseCliArguments(): ArgumentsList {
         .options({
             url: {
                 description: 'the template git repository url',
-                require: true,
+                require: false,
                 string: true,
+                default: '',
             },
             generator: {
                 description: 'the template generator',
@@ -55,13 +55,15 @@ export function parseCliArguments(): ArgumentsList {
             },
             'public-key': {
                 description: 'git user public key',
-                require: true,
+                require: false,
                 string: true,
+                default: '',
             },
             'private-key': {
                 description: 'git user provate key',
-                require: true,
+                require: false,
                 string: true,
+                default: '',
             },
         })
         .help()

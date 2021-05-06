@@ -108,3 +108,4 @@ _templates
 
 # Generator output
 app
+__tests__/tmp-output

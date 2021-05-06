@@ -1,11 +1,10 @@
 // Modules
 import yargs from 'yargs';
 import { get } from 'lodash';
-import { readFileSync } from 'fs-extra';
+import { PathLike, readFileSync } from 'fs-extra';
 // Types
 import { Arguments as YargsArguments } from 'yargs';
 import { ArgumentsList } from '../types/argument';
-import { PathLike } from 'node:fs';
 
 function parseCliArgumentsToList(yargsArguments: YargsArguments): ArgumentsList {
     return {

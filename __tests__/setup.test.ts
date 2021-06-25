@@ -3,7 +3,7 @@ process.env.AVOID_AUTOSTART = 'true';
 // Modules
 import path from 'path';
 import { isArray } from 'lodash';
-import { removeSync, mkdirSync, copySync, pathExistsSync } from 'fs-extra';
+import { removeSync, mkdirSync, copySync, pathExistsSync, readFileSync } from 'fs-extra';
 import { prompt, PromptModule } from 'inquirer';
 jest.mock('inquirer');
 // LIBs
@@ -52,7 +52,7 @@ describe('Testing generated ouput files', () => {
                     if (name === 'fs_remove_confirm') {
                         return 'y' as never;
                     } else if (name === 'npm_package_version') {
-                        return { npm_package_version: 14 } as never;
+                        return { npm_package_version: 16 } as never;
                     }
                 },
             );
@@ -63,6 +63,7 @@ describe('Testing generated ouput files', () => {
             });
             expect(pathExistsSync(`${outputPath}/.dockerignore`)).toBeTruthy();
             expect(pathExistsSync(`${outputPath}/Dockerfile`)).toBeTruthy();
+            expect(readFileSync(`${outputPath}/.nvmrc`, 'utf-8')).toBe('16\n');
         });
     });
 });

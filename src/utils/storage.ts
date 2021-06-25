@@ -2,8 +2,7 @@
 import del from 'del';
 import { moveSync, existsSync } from 'fs-extra';
 import { Spinner } from 'cli-spinner';
-// LIBs
-import { promptForAnswer } from '../utils/prompt';
+import { prompt } from 'inquirer';
 // Types
 import { SpinnerList } from '../types/cli';
 
@@ -13,10 +12,11 @@ export function moveSyncVerbose(from: string, to: string): void {
     spinner.stop(!!'clear');
 }
 
-export async function confirmBeforeRemove(path): Promise<void> {
+export async function confirmBeforeRemove(path: string): Promise<void> {
     if (existsSync(path)) {
-        const remove = await promptForAnswer({
+        const remove = await prompt({
             type: 'confirm',
+            name: 'fs_remove_confirm',
             message: `Are you sure you whant to remove ${path}?`,
         });
 

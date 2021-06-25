@@ -20,9 +20,9 @@ import { runner as hygen, Logger } from 'hygen';
 process.chdir(__dirname);
 
 export async function main(argumentsList: ArgumentsList): Promise<void> {
-    const templatesPath = `_templates/`;
+    const templatesPath = path.join(__dirname, '_templates/');
     if (existsSync(templatesPath)) {
-        del.sync(templatesPath, { force: true });
+        del.sync(templatesPath);
     }
     await confirmBeforeRemove(argumentsList.output);
     await gitClone({
@@ -39,10 +39,10 @@ export async function main(argumentsList: ArgumentsList): Promise<void> {
     console.log(colors.bold(`Found ${generators.length} hygen generators, taking off the plane ✈ ...`));
     for (const generator of generators) {
         await hygen(['generator', generator], {
-            templates: path.join(__dirname, templatesPath),
+            templates: templatesPath,
             cwd: argumentsList.output,
             logger: new Logger(() => ''),
-            createPrompter: () => require('enquirer'),
+            createPrompter: () => require('inquirer'),
             exec: async (action, body) => {
                 const opts = body && body.length > 0 ? { input: body } : {};
                 const spinner = new Spinner(action).setSpinnerString(SpinnerList.HARD).start();

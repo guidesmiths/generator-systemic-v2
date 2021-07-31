@@ -3,10 +3,9 @@ import yargs from 'yargs';
 import { get } from 'lodash';
 import { PathLike, readFileSync } from 'fs-extra';
 // Types
-import { Arguments as YargsArguments } from 'yargs';
 import { ArgumentsList } from '../types/argument';
 
-function parseCliArgumentsToList(yargsArguments: YargsArguments): ArgumentsList {
+function parseCliArgumentsToList(yargsArguments): ArgumentsList {
     return {
         url: get(yargsArguments, 'url') as string,
         generator: get(yargsArguments, 'generator') as string,
@@ -19,7 +18,7 @@ function parseCliArgumentsToList(yargsArguments: YargsArguments): ArgumentsList 
 }
 
 export function parseCliArguments(): ArgumentsList {
-    const yargsArguments: YargsArguments = yargs
+    const yargsArguments = yargs
         .command('template', 'Template command')
         .options({
             url: {

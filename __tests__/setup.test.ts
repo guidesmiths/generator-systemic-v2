@@ -14,7 +14,7 @@ import { main } from '../setup';
 import { TestConstants } from './@types/setup.type';
 // Triggers
 const mockedGitClone = gitClone as jest.Mock<Promise<void>>;
-const mockedInquirerPrompt = (prompt as unknown) as jest.Mock<PromptModule>;
+const mockedInquirerPrompt = prompt as unknown as jest.Mock<PromptModule>;
 
 describe('Testing generated ouput files', () => {
     const outputPath: string = path.join(__dirname, 'tmp-output');
@@ -46,16 +46,14 @@ describe('Testing generated ouput files', () => {
             mockedGitClone.mockImplementation(async () => {
                 copySync('./__tests__/templates/template_one', projectTemplateFolder);
             });
-            mockedInquirerPrompt.mockImplementation(
-                (params): PromptModule => {
-                    const { name } = isArray(params) ? params[0] : params;
-                    if (name === 'fs_remove_confirm') {
-                        return 'y' as never;
-                    } else if (name === 'npm_package_version') {
-                        return { npm_package_version: 16 } as never;
-                    }
-                },
-            );
+            mockedInquirerPrompt.mockImplementation((params): PromptModule => {
+                const { name } = isArray(params) ? params[0] : params;
+                if (name === 'fs_remove_confirm') {
+                    return 'y' as never;
+                } else if (name === 'npm_package_version') {
+                    return { npm_package_version: 16 } as never;
+                }
+            });
 
             await main({
                 generator: 'docker-node-lts,nvm',

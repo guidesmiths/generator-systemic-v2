@@ -54,7 +54,6 @@ describe('Testing generated ouput files', () => {
                     return { npm_package_version: 16 } as never;
                 }
             });
-
             await main({
                 generator: 'docker-node-lts,nvm',
                 output: outputPath,

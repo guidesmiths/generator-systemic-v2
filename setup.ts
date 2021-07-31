@@ -16,11 +16,9 @@ import execa from 'execa';
 import { Spinner } from 'cli-spinner';
 import { existsSync } from 'fs-extra';
 import { runner as hygen, Logger } from 'hygen';
-// Triggers
-process.chdir(__dirname);
 
 export async function main(argumentsList: ArgumentsList): Promise<void> {
-    const templatesPath = path.join(__dirname, '_templates/');
+    const templatesPath: string = path.join(__dirname, '_templates/');
     if (existsSync(templatesPath)) {
         del.sync(templatesPath);
     }
@@ -33,8 +31,7 @@ export async function main(argumentsList: ArgumentsList): Promise<void> {
         privateKey: argumentsList.privateKey,
         credentials: argumentsList.credentials,
     });
-
-    const generators = argumentsList.generator.split(',');
+    const generators: string[] = argumentsList.generator.split(',');
 
     console.log(colors.bold(`Found ${generators.length} hygen generators, taking off the plane ✈ ...`));
     for (const generator of generators) {

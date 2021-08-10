@@ -6,7 +6,7 @@ import { isArray } from 'lodash';
 import { removeSync, mkdirSync, copySync, pathExistsSync, readFileSync } from 'fs-extra';
 import { prompt, PromptModule } from 'inquirer';
 jest.mock('inquirer');
-// LIBs
+// Libs
 jest.mock('../src/utils/git');
 import { clone as gitClone } from '../src/utils/git';
 import { main } from '../setup';
@@ -22,6 +22,7 @@ describe('Testing generated ouput files', () => {
     const removeTemplatesFolder = () => removeSync(projectTemplateFolder);
     const constants: TestConstants = {
         promptCounter: 0,
+        originalArgv: process.argv,
     };
 
     beforeAll(() => {
@@ -32,6 +33,7 @@ describe('Testing generated ouput files', () => {
     });
 
     beforeEach(() => {
+        process.argv = constants.originalArgv.map((value: string) => value);
         constants.promptCounter = 0;
         removeTemplatesFolder();
     });
@@ -39,6 +41,27 @@ describe('Testing generated ouput files', () => {
     afterEach(() => {
         removeTemplatesFolder();
         jest.clearAllMocks();
+    });
+
+    describe('should fail', () => {
+        it('should fail if the output arguments is not an absolute path', async () => {
+            let error: Error = new Error();
+            process.argv.push(
+                'template',
+                '--url',
+                'git@github.com:guidesmiths/gs-hygen-templates.git',
+                '--generator',
+                'docker-node-lts,nvm',
+                '--output',
+                'not/an/absolute/path',
+            );
+            try {
+                await main();
+            } catch (_error) {
+                error = _error;
+            }
+            expect(error.message).toBe('The provided value "not/an/absolute/path" is not an absolute path');
+        });
     });
 
     describe('should not fail', () => {
@@ -54,10 +77,16 @@ describe('Testing generated ouput files', () => {
                     return { npm_package_version: 16 } as never;
                 }
             });
-            await main({
-                generator: 'docker-node-lts,nvm',
-                output: outputPath,
-            });
+            process.argv.push(
+                'template',
+                '--url',
+                'git@github.com:guidesmiths/gs-hygen-templates.git',
+                '--generator',
+                'docker-node-lts,nvm',
+                '--output',
+                outputPath,
+            );
+            await main();
             expect(pathExistsSync(`${outputPath}/.dockerignore`)).toBeTruthy();
             expect(pathExistsSync(`${outputPath}/Dockerfile`)).toBeTruthy();
             expect(readFileSync(`${outputPath}/.nvmrc`, 'utf-8')).toBe('16\n');

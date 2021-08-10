@@ -7,7 +7,7 @@
         "gs-hygen": "build/setup.js"
     },
     "scripts": {
-        "test": "npx jest --runInBand --verbose",
+        "test": "npx jest --runInBand --verbose true",
         "test:debug": "DEBUG=unit:tests* npm run test",
         "test:watch": "npm run test -- --watchAll",
         "test:watch:debug": "npm run test:watch",

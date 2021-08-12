@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-// LIBs
+// Libs
 import { parseCliArguments } from './src/utils/arguments';
 import { clone as gitClone } from './src/utils/git';
 import { testOutputFiles } from './src/utils/checks';
@@ -14,10 +14,11 @@ import colors from 'colors';
 import path from 'path';
 import execa from 'execa';
 import { Spinner } from 'cli-spinner';
-import { existsSync } from 'fs-extra';
+import { existsSync, readFileSync } from 'fs-extra';
 import { runner as hygen, Logger } from 'hygen';
 
-export async function main(argumentsList: ArgumentsList): Promise<void> {
+export async function main(): Promise<void> {
+    const argumentsList: ArgumentsList = parseCliArguments();
     const templatesPath: string = path.join(__dirname, '_templates/');
     if (existsSync(templatesPath)) {
         del.sync(templatesPath);
@@ -27,8 +28,8 @@ export async function main(argumentsList: ArgumentsList): Promise<void> {
         url: argumentsList.url,
         destination: templatesPath,
         username: argumentsList.username,
-        publicKey: argumentsList.publicKey,
-        privateKey: argumentsList.privateKey,
+        publicKey: argumentsList.publicKey ? readFileSync(argumentsList.publicKey).toString() : '',
+        privateKey: argumentsList.privateKey ? readFileSync(argumentsList.privateKey).toString() : '',
         credentials: argumentsList.credentials,
     });
     const generators: string[] = argumentsList.generator.split(',');
@@ -59,6 +60,5 @@ export async function main(argumentsList: ArgumentsList): Promise<void> {
 }
 
 if (!process.env.AVOID_AUTOSTART) {
-    const argumentsList: ArgumentsList = parseCliArguments();
-    main(argumentsList);
+    main();
 }

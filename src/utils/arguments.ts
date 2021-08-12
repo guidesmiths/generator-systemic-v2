@@ -1,24 +1,31 @@
 // Modules
 import yargs from 'yargs';
 import { get } from 'lodash';
-import { PathLike, readFileSync } from 'fs-extra';
+import { PathLike } from 'fs-extra';
+// Libs
+import { isAbsolutePath } from './validator';
 // Types
 import { ArgumentsList } from '../types/argument';
 
 function parseCliArgumentsToList(yargsArguments): ArgumentsList {
-    return {
+    const argumentsList: ArgumentsList = {
         url: get(yargsArguments, 'url') as string,
         generator: get(yargsArguments, 'generator') as string,
         output: get(yargsArguments, 'output') as string,
         username: get(yargsArguments, 'username') as string,
         credentials: get(yargsArguments, 'credentials') as string,
-        publicKey: readFileSync(get(yargsArguments, 'public-key') as PathLike).toString(),
-        privateKey: readFileSync(get(yargsArguments, 'private-key') as PathLike).toString(),
+        publicKey: get(yargsArguments, 'public-key') as PathLike,
+        privateKey: get(yargsArguments, 'private-key') as PathLike,
     };
+    // Run validators
+    isAbsolutePath(argumentsList.output);
+
+    // Return values after success validation
+    return argumentsList;
 }
 
 export function parseCliArguments(): ArgumentsList {
-    const yargsArguments = yargs
+    const yargsArguments = yargs(process.argv.slice(2))
         .command('template', 'Template command')
         .options({
             url: {

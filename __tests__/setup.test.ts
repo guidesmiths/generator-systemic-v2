@@ -2,6 +2,7 @@
 process.env.AVOID_AUTOSTART = 'true';
 // Modules
 import path from 'path';
+import { tmpdir } from 'os';
 import { isArray } from 'lodash';
 import { removeSync, mkdirSync, copySync, pathExistsSync, readFileSync } from 'fs-extra';
 import { prompt, PromptModule } from 'inquirer';
@@ -17,8 +18,8 @@ const mockedGitClone = gitClone as jest.Mock<Promise<void>>;
 const mockedInquirerPrompt = prompt as unknown as jest.Mock<PromptModule>;
 
 describe('Testing generated ouput files', () => {
-    const outputPath: string = path.join(__dirname, 'tmp-output');
-    const projectTemplateFolder: string = path.join(__dirname, '../_templates');
+    const outputPath: string = path.join(tmpdir(), 'gs-hygen/.__tests__/output');
+    const projectTemplateFolder: string = path.join(tmpdir(), 'gs-hygen/templates/');
     const removeTemplatesFolder = () => removeSync(projectTemplateFolder);
     const constants: TestConstants = {
         promptCounter: 0,
@@ -29,7 +30,7 @@ describe('Testing generated ouput files', () => {
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         console.log = () => {};
         removeSync(outputPath);
-        mkdirSync(outputPath);
+        mkdirSync(outputPath, { recursive: true });
     });
 
     beforeEach(() => {
@@ -41,6 +42,10 @@ describe('Testing generated ouput files', () => {
     afterEach(() => {
         removeTemplatesFolder();
         jest.clearAllMocks();
+    });
+
+    afterAll(() => {
+        removeSync(path.join(tmpdir(), 'gs-hygen'));
     });
 
     describe('should fail', () => {

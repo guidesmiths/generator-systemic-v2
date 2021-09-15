@@ -1,5 +1,7 @@
 // Modules
+import path from 'path';
 import del from 'del';
+import { tmpdir } from 'os';
 import { moveSync, existsSync } from 'fs-extra';
 import { Spinner } from 'cli-spinner';
 import { prompt } from 'inquirer';
@@ -26,4 +28,8 @@ export async function confirmBeforeRemove(path: string): Promise<void> {
             process.exit(0);
         }
     }
+}
+
+export function getTemplatesPath(): string {
+    return path.join(tmpdir(), 'gs-hygen/templates/');
 }

@@ -4,14 +4,13 @@
 import { parseCliArguments } from './src/utils/arguments';
 import { clone as gitClone } from './src/utils/git';
 import { testOutputFiles } from './src/utils/checks';
-import { confirmBeforeRemove } from './src/utils/storage';
+import { confirmBeforeRemove, getTemplatesPath } from './src/utils/storage';
 // Types
 import { ArgumentsList } from './src/types/argument';
 import { SpinnerList } from './src/types/cli';
 // Modules
 import del from 'del';
 import colors from 'colors';
-import path from 'path';
 import execa from 'execa';
 import { Spinner } from 'cli-spinner';
 import { existsSync, readFileSync } from 'fs-extra';
@@ -19,9 +18,9 @@ import { runner as hygen, Logger } from 'hygen';
 
 export async function main(): Promise<void> {
     const argumentsList: ArgumentsList = parseCliArguments();
-    const templatesPath: string = path.join(__dirname, '_templates/');
+    const templatesPath: string = getTemplatesPath();
     if (existsSync(templatesPath)) {
-        del.sync(templatesPath);
+        del.sync(templatesPath, { force: true });
     }
     await confirmBeforeRemove(argumentsList.output);
     await gitClone({
@@ -32,9 +31,14 @@ export async function main(): Promise<void> {
         privateKey: argumentsList.privateKey ? readFileSync(argumentsList.privateKey).toString() : '',
         credentials: argumentsList.credentials,
     });
-    const generators: string[] = argumentsList.generator.split(',');
 
-    console.log(colors.bold(`Found ${generators.length} hygen generators, taking off the plane ✈ ...`));
+    const generators: string[] = argumentsList.generator.split(',');
+    console.log(
+        colors.bold(
+            `Found ${generators.length} hygen generators from "${templatesPath}", taking off the plane ✈ ...\n`,
+        ),
+    );
+
     for (const generator of generators) {
         await hygen(['generator', generator], {
             templates: templatesPath,

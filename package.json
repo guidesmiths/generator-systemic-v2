@@ -1,6 +1,6 @@
 {
     "name": "gs-hygen",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "description": "Remote hygen templates generator",
     "main": "setup.ts",
     "bin": {

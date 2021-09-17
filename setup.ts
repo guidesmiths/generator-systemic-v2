@@ -4,7 +4,7 @@
 import { parseCliArguments } from './src/utils/arguments';
 import { clone as gitClone } from './src/utils/git';
 import { testOutputFiles } from './src/utils/checks';
-import { confirmBeforeRemove, getTemplatesPath } from './src/utils/storage';
+import { removePath, getTemplatesPath } from './src/utils/storage';
 // Types
 import { ArgumentsList } from './src/types/argument';
 import { SpinnerList } from './src/types/cli';
@@ -22,7 +22,7 @@ export async function main(): Promise<void> {
     if (existsSync(templatesPath)) {
         del.sync(templatesPath, { force: true });
     }
-    await confirmBeforeRemove(argumentsList.output);
+    await removePath(argumentsList.output, !!'confirm');
     await gitClone({
         url: argumentsList.url,
         destination: templatesPath,
@@ -33,26 +33,25 @@ export async function main(): Promise<void> {
     });
 
     const generators: string[] = argumentsList.generator.split(',');
-    console.log(
-        colors.bold(
-            `Found ${generators.length} hygen generators from "${templatesPath}", taking off the plane ✈ ...\n`,
-        ),
-    );
+    console.log(colors.bold(`\nFound ${generators.length} hygen generators`));
 
+    let count = 1;
     for (const generator of generators) {
+        console.log(colors.cyan(`\n(${count}/${generators.length}) >`), colors.bgCyan(`${generator}`));
         await hygen(['generator', generator], {
             templates: templatesPath,
             cwd: argumentsList.output,
             logger: new Logger(() => ''),
             createPrompter: () => require('inquirer'),
             exec: async (action, body) => {
-                const opts = body && body.length > 0 ? { input: body } : {};
+                const opts = body?.length > 0 ? { input: body } : {};
                 const spinner = new Spinner(action).setSpinnerString(SpinnerList.HARD).start();
                 await execa.command(action, { ...opts, shell: true, cwd: argumentsList.output });
                 spinner.stop(!!'clear');
             },
             debug: !!process.env.DEBUG,
         });
+        count++;
     }
 
     if (!existsSync(argumentsList.output)) {

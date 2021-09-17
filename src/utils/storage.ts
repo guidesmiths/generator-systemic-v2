@@ -14,19 +14,21 @@ export function moveSyncVerbose(from: string, to: string): void {
     spinner.stop(!!'clear');
 }
 
-export async function confirmBeforeRemove(path: string): Promise<void> {
+export async function removePath(path: string, confirm = false): Promise<void> {
     if (existsSync(path)) {
-        const remove = await prompt({
-            type: 'confirm',
-            name: 'fs_remove_confirm',
-            message: `Are you sure you whant to remove ${path}?`,
-        });
+        const remove =
+            !confirm ||
+            (await prompt({
+                type: 'confirm',
+                name: 'fs_remove_confirm',
+                message: `Are you sure you want to remove ${path}?`,
+            }));
 
-        if (remove) {
-            del.sync(path, { force: true });
-        } else {
+        if (!remove) {
             process.exit(0);
         }
+
+        del.sync(path, { force: true });
     }
 }
 

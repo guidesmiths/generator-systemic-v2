@@ -6,10 +6,10 @@ This is a [Node.js](https://nodejs.org/en/) module available through the
 [npm registry](https://www.npmjs.com/).
 
 Before installing, [download and install Node.js](https://nodejs.org/en/download/).
-Node.js 12.0.0 or higher is required.
+Node.js v14 or higher is required.
 
 Installation is done using the
-[`npm install` command](https://docs.npmjs.com/getting-started/installing-npm-packages-locally):
+[`npm install`](https://docs.npmjs.com/getting-started/installing-npm-packages-locally) command:
 
 ```bash
 $ npm install -g gs-hygen
@@ -18,10 +18,10 @@ $ npm install -g gs-hygen
 ## Install from git repository
 
 ```bash
-git clone https://github.com/bounteous/gs-hygen
+git clone https://github.com/guidesmiths/gs-hygen
 npm install --quiet
 npm pack
-npm i -g gs-hygen-1.0.0.tgz
+npm i -g gs-hygen-*.tgz
 gs-hygen --help
 ```
 
@@ -29,8 +29,38 @@ gs-hygen --help
 
 ```bash
 gs-hygen \
-template --url git@github.com:guidesmiths/infinitas-hygen-template-generators.git --generator service-systemic-basics,nvm,commitlint,jest-systemic,jest-systemic-mock-bus --output /tmp/generator-demo-repo \
-git --private-key ~/.ssh/id_rsa --public-key ~/.ssh/id_rsa.pub
+  template \
+    --url git@github.com:guidesmiths/infinitas-hygen-template-generators.git \
+    --generator service-systemic-basics,nvm,commitlint,jest-systemic,jest-systemic-mock-bus \
+    --output /tmp/generator-demo-repo \
+  git \
+    --private-key ~/.ssh/id_rsa \
+    --public-key ~/.ssh/id_rsa.pub
+```
+
+## CLI options
+
+### Getting help
+```
+gs-hygen --help
+```
+```
+gs-hygen [command]
+
+Commands:
+  gs-hygen template  Template command
+  gs-hygen git       Git command
+
+Options:
+      --version      Show version number                               [boolean]
+      --url          the template git repository url      [string] [default: ""]
+      --generator    the template generator                  [string] [required]
+      --output       the template generator output files     [string] [required]
+      --username     git username                      [string] [default: "git"]
+      --credentials  git username credentials             [string] [default: ""]
+      --public-key   git user public key                  [string] [default: ""]
+      --private-key  git user provate key                 [string] [default: ""]
+  -h, --help         Show help                                         [boolean]
 ```
 
 ## Creating templates

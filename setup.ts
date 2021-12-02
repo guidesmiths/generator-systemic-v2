@@ -4,7 +4,7 @@
 import { parseCliArguments } from './src/utils/arguments';
 import { clone as gitClone } from './src/utils/git';
 import { testOutputFiles } from './src/utils/checks';
-import { removePath, getTemplatesPath } from './src/utils/storage';
+import { getTemplatesPath } from './src/utils/storage';
 // Types
 import { ArgumentsList } from './src/types/argument';
 import { SpinnerList } from './src/types/cli';
@@ -22,7 +22,6 @@ export async function main(): Promise<void> {
     if (existsSync(templatesPath)) {
         del.sync(templatesPath, { force: true });
     }
-    await removePath(argumentsList.output, !!'confirm');
     await gitClone({
         url: argumentsList.url,
         destination: templatesPath,

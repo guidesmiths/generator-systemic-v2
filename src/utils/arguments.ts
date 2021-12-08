@@ -35,8 +35,8 @@ export function parseCliArguments(): ArgumentsList {
                 default: '',
             },
             generator: {
-                description: 'the template generator',
-                require: true,
+                description: 'the template generators, example: "docker,git,eslint"',
+                require: false,
                 string: true,
             },
             output: {

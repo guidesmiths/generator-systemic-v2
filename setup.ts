@@ -5,6 +5,7 @@ import { parseCliArguments } from './src/utils/arguments';
 import { clone as gitClone } from './src/utils/git';
 import { testOutputFiles } from './src/utils/checks';
 import { getTemplatesPath } from './src/utils/storage';
+import { getGenerators } from './src/utils/generator';
 // Types
 import { ArgumentsList } from './src/types/argument';
 import { SpinnerList } from './src/types/cli';
@@ -31,7 +32,7 @@ export async function main(): Promise<void> {
         credentials: argumentsList.credentials,
     });
 
-    const generators: string[] = argumentsList.generator.split(',');
+    const generators: string[] = await getGenerators(argumentsList, templatesPath);
     console.log(colors.bold(`\nFound ${generators.length} hygen generators`));
 
     let count = 1;

@@ -54,7 +54,8 @@ Commands:
 Options:
       --version      Show version number                               [boolean]
       --url          the template git repository url      [string] [default: ""]
-      --generator    the template generator                  [string] [required]
+      --generator    the template generators, example: "docker,git,eslint"
+                                                                        [string]
       --output       the template generator output files     [string] [required]
       --username     git username                      [string] [default: "git"]
       --credentials  git username credentials             [string] [default: ""]
@@ -62,6 +63,13 @@ Options:
       --private-key  git user provate key                 [string] [default: ""]
   -h, --help         Show help                                         [boolean]
 ```
+
+### Optional parameters
+
+You can also choose the generators manually avoiding to provide the `--generator` argument, the output will look like this:
+
+![image](https://user-images.githubusercontent.com/16175933/145254497-bf6f27f6-62d9-4079-bb7e-a9865f356d11.png)
+
 
 ## Creating templates
 

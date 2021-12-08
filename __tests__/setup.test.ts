@@ -29,11 +29,11 @@ describe('Testing generated ouput files', () => {
     beforeAll(() => {
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         console.log = () => {};
-        removeSync(outputPath);
-        mkdirSync(outputPath, { recursive: true });
     });
 
     beforeEach(() => {
+        removeSync(outputPath);
+        mkdirSync(outputPath, { recursive: true });
         process.argv = constants.originalArgv.map((value: string) => value);
         constants.promptCounter = 0;
         removeTemplatesFolder();
@@ -70,31 +70,61 @@ describe('Testing generated ouput files', () => {
     });
 
     describe('should not fail', () => {
-        it('should generate "docker-node-lts,nvm" templates output files', async () => {
+        beforeAll(() => {
             mockedGitClone.mockImplementation(async () => {
                 copySync('./__tests__/templates/template_one', projectTemplateFolder);
             });
-            mockedInquirerPrompt.mockImplementation((params): PromptModule => {
-                const { name } = isArray(params) ? params[0] : params;
-                if (name === 'fs_remove_confirm') {
-                    return 'y' as never;
-                } else if (name === 'npm_package_version') {
-                    return { npm_package_version: 16 } as never;
-                }
+        });
+
+        const templatesExpects = {
+            dockerNodeLts: (outputPath: string) => {
+                expect(pathExistsSync(`${outputPath}/.dockerignore`)).toBeTruthy();
+                expect(pathExistsSync(`${outputPath}/Dockerfile`)).toBeTruthy();
+            },
+        };
+
+        describe('should generate "docker-node-lts,nvm" templates', () => {
+            it('from CLI argv', async () => {
+                mockedInquirerPrompt.mockImplementation((params): PromptModule => {
+                    const { name } = isArray(params) ? params[0] : params;
+                    if (name === 'npm_package_version') {
+                        return { npm_package_version: 16 } as never;
+                    }
+                });
+                process.argv.push(
+                    'template',
+                    '--url',
+                    'git@github.com:guidesmiths/gs-hygen-templates.git',
+                    '--generator',
+                    'docker-node-lts,nvm',
+                    '--output',
+                    outputPath,
+                );
+                await main();
+                templatesExpects.dockerNodeLts(outputPath);
+                expect(readFileSync(`${outputPath}/.nvmrc`, 'utf-8')).toBe('16\n');
             });
-            process.argv.push(
-                'template',
-                '--url',
-                'git@github.com:guidesmiths/gs-hygen-templates.git',
-                '--generator',
-                'docker-node-lts,nvm',
-                '--output',
-                outputPath,
-            );
-            await main();
-            expect(pathExistsSync(`${outputPath}/.dockerignore`)).toBeTruthy();
-            expect(pathExistsSync(`${outputPath}/Dockerfile`)).toBeTruthy();
-            expect(readFileSync(`${outputPath}/.nvmrc`, 'utf-8')).toBe('16\n');
+
+            it('from checkbox prompt', async () => {
+                mockedInquirerPrompt.mockImplementation((params): PromptModule => {
+                    const { name } = isArray(params) ? params[0] : params;
+                    if (name === 'npm_package_version') {
+                        return { npm_package_version: 12 } as never;
+                    } else if (name === 'generatorsNames') {
+                        return { generatorsNames: ['nvm', 'docker-node-lts'] } as never;
+                    }
+                });
+                process.argv.push(
+                    'template',
+                    '--url',
+                    'git@github.com:guidesmiths/gs-hygen-templates.git',
+                    '--output',
+                    outputPath,
+                );
+                await main();
+                templatesExpects.dockerNodeLts(outputPath);
+                expect(readFileSync(`${outputPath}/.nvmrc`, 'utf-8')).toBe('12\n');
+            });
         });
     });
 });
